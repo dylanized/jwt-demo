@@ -26,16 +26,10 @@ class HandlerGenerator {
           token: token
         });
       } else {
-        res.send(403).json({
-          success: false,
-          message: 'Incorrect username or password'
-        });
+        res.sendStatus(403);
       }
     } else {
-      res.send(400).json({
-        success: false,
-        message: 'Authentication failed! Please check the request'
-      });
+      res.sendStatus(400);
     }
   }
   index (req, res) {
@@ -58,7 +52,11 @@ function main () {
   // Routes & Handlers
   app.post('/login', handlers.login);
   app.get('/', middleware.checkToken, handlers.index);
-  app.listen(port, () => console.log(`Server is listening on port: ${port}`));
+  const instance = app.listen(port, () => console.log(`Server is listening on port: ${port}`));
+
+  app.close = () => instance.close();
+
+  module.exports = app;
 }
 
 main();
